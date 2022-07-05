@@ -1,12 +1,15 @@
 package main
 
 import (
+	"log"
 	"os"
+	"strings"
 
-	"github.com/deuxksy/template-go-application/internal/configuration"
-	"github.com/deuxksy/template-go-application/internal/logger"
+	"github.com/deuxksy/zzizily-gluttony-go/internal/configuration"
+	"github.com/deuxksy/zzizily-gluttony-go/internal/logger"
 	"github.com/fsnotify/fsnotify"
-	"github.com/samber/lo"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/input"
 	"github.com/spf13/viper"
 )
 
@@ -58,9 +61,10 @@ func initProfile() string {
 }
 
 func main () {
-	names := lo.Uniq([]string{"Samuel", "Marc", "Samuel"})
-	logger.Info("%s, %d", names, len(names))
-	logger.Info("%d", configuration.RuntimeConf.Server.Port)
-	logger.Info(configuration.RuntimeConf.Datasource.Url)
-	logger.Error(configuration.RuntimeConf.Datasource.DbType)
+	page := rod.New().MustConnect().MustPage("https://github.com/search")
+	page.MustScreenshot("screen/search.png")
+	page.MustElement(`input[name=q]`).MustWaitVisible().MustInput("chromedp").MustType(input.Enter)
+	page.MustScreenshot("screen/input.png")
+	res := page.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
+	log.Printf("got: `%s`", strings.TrimSpace(res))
 }
