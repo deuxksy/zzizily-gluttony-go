@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
 	"os"
-	"strings"
+	"time"
 
 	"github.com/deuxksy/zzizily-gluttony-go/internal/configuration"
 	"github.com/deuxksy/zzizily-gluttony-go/internal/logger"
@@ -56,15 +55,29 @@ func initProfile() string {
 	if len(profile) <= 0 {
 		profile = "local"
 	}
-	logger.Debug(profile)
+	// logger.Debug(profile)
 	return profile
 }
 
 func main () {
-	page := rod.New().MustConnect().MustPage("https://github.com/search")
-	page.MustScreenshot("screen/search.png")
-	page.MustElement(`input[name=q]`).MustWaitVisible().MustInput("chromedp").MustType(input.Enter)
-	page.MustScreenshot("screen/input.png")
-	res := page.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
-	log.Printf("got: `%s`", strings.TrimSpace(res))
+	page := rod.New().MustConnect().MustPage("https://assist9.i-on.net/login")
+	page.MustScreenshot("screen/01.png")
+	page.MustElement("input[name=userId]").MustWaitVisible().MustInput("")
+	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput("")
+	page.MustScreenshot("screen/02.png")
+	page.MustElement("input[name=userPwd]").MustType(input.Enter)
+	page.MustScreenshot("screen/03.png")
+	time.Sleep(time.Millisecond*500)
+	logger.Debug(page.MustInfo().URL)
+	page.MustScreenshot("screen/04.png")
+	time.Sleep(time.Millisecond*500)
+	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
+	time.Sleep(time.Millisecond*500)
+	page.MustScreenshot("screen/05.png")
+	page.MustElementX("//*[contains(@class, 'fc-event fc-event-hori fc-event-start fc-event-end bg-color-red')]").Click()
+	time.Sleep(time.Millisecond*500)
+	page.MustScreenshot("screen/06.png")
+	// res := page.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
+	// log.Printf("got: "%s"", strings.TrimSpace(res))
+
 }
