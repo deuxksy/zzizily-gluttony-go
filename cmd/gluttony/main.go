@@ -1,8 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/deuxksy/zzizily-gluttony-go/internal/configuration"
@@ -60,31 +64,69 @@ func initProfile() string {
 	return profile
 }
 
+type ChromeVersion struct {
+	Browser string `json:"browser"`
+	ProtocolVersion string `json:"Protocol-Version"`
+	UserAgent string `json:"User-Agent"`
+	V8Version string `json:"V8-Version"`
+	WebkitVersion string `json:"WebKit-Version"`
+	WebSocketDebuggerUrl string `json:"webSocketDebuggerUrl"`
+}
+
+func initChrome () string {
+	lsCmd := exec.Command(
+		"C:/Program Files/Google/Chrome/Application/chrome.exe", 
+		"--user-data-dir=D:/TEMP/chrome", 
+		"--remote-debugging-port=12222", 
+		"--enable-logging", 
+		"--v=1",
+	)
+	lsCmd.Stdout = os.Stdout
+	lsCmd.Start()
+	resp, err := http.Get("http://localhost:12222/json/version")
+	if err != nil {
+		panic(err)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	textBytes := []byte(string(body))
+	chromeVersion := ChromeVersion {}
+
+	if err := json.Unmarshal(textBytes, &chromeVersion); err != nil {
+		panic(err)
+	}
+	return chromeVersion.WebSocketDebuggerUrl
+}
+
 func a9 () {
-	browser := rod.New().MustConnect()
+	url := initChrome()
+	browser := rod.New().ControlURL(url).MustConnect()
 	defer browser.MustClose()
 
 	tap := browser.MustPage("https://assist9.i-on.net/login")
 	
-	tap.MustScreenshot("screen/01.png")
-	tap.MustElement("input[name=userId]").MustWaitVisible().MustInput("")
-	tap.MustElement("input[name=userPwd]").MustWaitVisible().MustInput("")
+	tap.MustScreenshot("screenshot/01.png")
+	tap.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERNAME"))
+	tap.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPASSWORD"))
 	
 	time.Sleep(time.Millisecond*500)
-	tap.MustScreenshot("screen/02.png")
+	tap.MustScreenshot("screenshot/02.png")
 	tap.MustElement("input[name=userPwd]").MustType(input.Enter)
 	
 	time.Sleep(time.Millisecond*500)
-	tap.MustScreenshot("screen/03.png")
+	tap.MustScreenshot("screenshot/03.png")
 	logger.Debug(tap.MustInfo().URL)
 	tap.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
 	
 	time.Sleep(time.Millisecond*500)
-	tap.MustScreenshot("screen/05.png")
-	tap.MustElement("div[class=`fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue`]")
+	tap.MustScreenshot("screenshot/05.png")
+	// tap.MustElement("div[class=`fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue`]")
 	
 	// time.Sleep(time.Millisecond*500)
-	// browser.MustScreenshot("screen/06.png")
+	// browser.MustScreenshot("screenshot/06.png")
 	// res := browser.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
 	// log.Printf("got: "%s"", strings.TrimSpace(res))
 }
@@ -95,7 +137,7 @@ func Example_wait_for_request() {
 	defer browser.MustClose()
 
 	page := browser.MustPage("https://duckduckgo.com/")
-	page.MustScreenshot("screen/duckduckgo/01.png")
+	page.MustScreenshot("screenshot/duckduckgo/01.png")
 	// Start to analyze request events
 	wait := page.MustWaitRequestIdle()
 
@@ -113,5 +155,8 @@ func Example_wait_for_request() {
 }
 
 func main () {
-	Example_wait_for_request()
+	a9()
 }
+
+
+
