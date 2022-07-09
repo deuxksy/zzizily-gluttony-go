@@ -1,9 +1,10 @@
-datasource:
-  dbType: "sqlite3"
-  url: "./local.db"
-server:
-  port: 8080
-url:
-  - https://assist9.i-on.net/login #로그인 페이지
-  - https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183 #헬스케어
-  - https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46 #점심식사
+Scene:
+  - name: 로그인
+    url: https://assist9.i-on.net/login
+    action: move
+  - name: 헬스케어
+    url: https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183
+    action: move
+  - name: 점심식사
+    url: https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46
+    action: move

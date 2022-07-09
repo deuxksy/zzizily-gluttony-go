@@ -3,17 +3,11 @@ package configuration
 var RuntimeConf = RuntimeConfig{}
 
 type RuntimeConfig struct {
-	Datasource Datasource `yaml:"datasource"`
-	Server     Server     `yaml:"server"`
+	Scenario 		[]Scene      `yaml:"Scenario,mapstructure"`
 }
 
-type Datasource struct {
-	DbType   string `yaml:"dbType"`
-	Url      string `yaml:"url"`
-	UserName string `yaml:"userName"`
-	Password string `yaml:"password"`
-}
-
-type Server struct {
-	Port int `yaml:"port"`
+type Scene struct {
+	Name string `yaml:"Name"`
+	Url string `yaml:"Url"`
+	Action string `yaml:"Action"`
 }
