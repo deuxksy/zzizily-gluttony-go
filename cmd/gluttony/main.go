@@ -109,8 +109,8 @@ func a9 () {
 	tap := browser.MustPage("https://assist9.i-on.net/login")
 	
 	tap.MustScreenshot("screenshot/01.png")
-	tap.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERNAME"))
-	tap.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPASSWORD"))
+	tap.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
+	tap.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPWD"))
 	
 	time.Sleep(time.Millisecond*500)
 	tap.MustScreenshot("screenshot/02.png")
