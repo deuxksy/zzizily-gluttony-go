@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -117,9 +116,9 @@ func a9 () {
 	
 	time.Sleep(time.Millisecond*500)
 	page.MustScreenshot("screenshot/02.png")
-	page.MustElement("input[name=userPwd]").MustType(input.Enter)
+	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
+	//page.MustWaitLoad()
 	
-	time.Sleep(time.Millisecond*1000)
 	page.MustScreenshot("screenshot/03.png")
 	logger.Debug(page.MustInfo().URL)
 	wait := page.MustWaitNavigation()
@@ -128,37 +127,15 @@ func a9 () {
 
 	page.MustScreenshot("screenshot/04.png")
 	if page.MustHas(".bg-color-blue") {
-		logger.Info("OK")
+		page.MustElement(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`).MustClick()
+		time.Sleep(time.Millisecond*500)
+		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "점심식사 신청을 완료 하였습니다.")
 	} else {
-		logger.Warn("NO")
+		logger.Warn("%s", "신청할 점심식사가 없습니다.")
 	}
-	// time.Sleep(time.Millisecond*500)
-	// browser.MustScreenshot("screenshot/06.png")
-	// res := browser.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
-	// log.Printf("got: "%s"", strings.TrimSpace(res))
-}
-
-
-func Example_wait_for_request() {
-	browser := rod.New().MustConnect()
-	defer browser.MustClose()
-
-	page := browser.MustPage("https://duckduckgo.com/")
-	page.MustScreenshot("screenshot/duckduckgo/01.png")
-	// Start to analyze request events
-	wait := page.MustWaitRequestIdle()
-
-	// This will trigger the search ajax request
-	page.MustElement("#search_form_input_homepage").MustClick().MustInput("lisp")
-
-	// Wait until there's no active requests
-	wait()
-
-	// We want to make sure that after waiting, there are some autocomplete
-	// suggestions available.
-	fmt.Println(len(page.MustElements(".search__autocomplete .acp")) > 0)
-
-	// Output: true
+	time.Sleep(time.Millisecond*500)
+	page.MustScreenshot("screenshot/05.png")
 }
 
 func main () {
