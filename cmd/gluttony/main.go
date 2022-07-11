@@ -74,6 +74,7 @@ type ChromeVersion struct {
 }
 
 func initChrome () string {
+
 	lsCmd := exec.Command(
 		"C:/Program Files/Google/Chrome/Application/chrome.exe", 
 		"--user-data-dir=D:/TEMP/chrome", 
@@ -102,29 +103,35 @@ func initChrome () string {
 }
 
 func a9 () {
-	url := initChrome()
-	browser := rod.New().ControlURL(url).MustConnect()
-	defer browser.MustClose()
+	// url := initChrome()
+	// browser := rod.New().ControlURL(url).MustConnect()
+	// tap := browser.MustPage("https://assist9.i-on.net/login")
+	// browser := rod.New().MustConnect()
+	// defer browser.MustClose()
+	browser := rod.New().MustConnect()
+	page := browser.MustPage("https://assist9.i-on.net/login")
+	
+	page.MustScreenshot("screenshot/01.png")
+	page.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
+	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
+	
+	time.Sleep(time.Millisecond*500)
+	page.MustScreenshot("screenshot/02.png")
+	page.MustElement("input[name=userPwd]").MustType(input.Enter)
+	
+	time.Sleep(time.Millisecond*1000)
+	page.MustScreenshot("screenshot/03.png")
+	logger.Debug(page.MustInfo().URL)
+	wait := page.MustWaitNavigation()
+	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
+	wait()
 
-	tap := browser.MustPage("https://assist9.i-on.net/login")
-	
-	tap.MustScreenshot("screenshot/01.png")
-	tap.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
-	tap.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPWD"))
-	
-	time.Sleep(time.Millisecond*500)
-	tap.MustScreenshot("screenshot/02.png")
-	tap.MustElement("input[name=userPwd]").MustType(input.Enter)
-	
-	time.Sleep(time.Millisecond*500)
-	tap.MustScreenshot("screenshot/03.png")
-	logger.Debug(tap.MustInfo().URL)
-	tap.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
-	
-	time.Sleep(time.Millisecond*500)
-	tap.MustScreenshot("screenshot/05.png")
-	// tap.MustElement("div[class=`fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue`]")
-	
+	page.MustScreenshot("screenshot/04.png")
+	if page.MustHas(".bg-color-blue") {
+		logger.Info("OK")
+	} else {
+		logger.Warn("NO")
+	}
 	// time.Sleep(time.Millisecond*500)
 	// browser.MustScreenshot("screenshot/06.png")
 	// res := browser.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
