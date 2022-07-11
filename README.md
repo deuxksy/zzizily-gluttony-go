@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/deuxksy/template-go-application)](https://goreportcard.com/report/github.com/deuxksy/template-go-application) Go Application 을 만들기 위한 기본 template
 
-## Tree
+## Folder Layout
 
 ```bash
 .
@@ -36,3 +36,23 @@
 
 - zap
 - viper
+
+## build
+
+### windows
+
+```bash
+# GOOS=windows GOARCH=amd64 go build main.go
+```
+
+### linux
+
+```bash
+# GOOS=linux GOARCH=386 go build main.go
+```
+
+### mac
+
+```bash
+# GOOS=darwin GOARCH=arm64 go build main.go
+```
