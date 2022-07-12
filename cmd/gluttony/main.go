@@ -101,7 +101,7 @@ func initChrome () string {
 	return chromeVersion.WebSocketDebuggerUrl
 }
 
-func a9 () {
+func lunch () {
 	// url := initChrome()
 	// browser := rod.New().ControlURL(url).MustConnect()
 	// tap := browser.MustPage("https://assist9.i-on.net/login")
@@ -110,22 +110,22 @@ func a9 () {
 	browser := rod.New().MustConnect()
 	page := browser.MustPage("https://assist9.i-on.net/login")
 	
-	page.MustScreenshot("screenshot/01.png")
+	page.MustScreenshot("screenshot/L01.png")
 	page.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
 	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
 	
 	time.Sleep(time.Millisecond*500)
-	page.MustScreenshot("screenshot/02.png")
+	page.MustScreenshot("screenshot/L02.png")
 	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
 	//page.MustWaitLoad()
 	
-	page.MustScreenshot("screenshot/03.png")
+	page.MustScreenshot("screenshot/L03.png")
 	logger.Debug(page.MustInfo().URL)
 	wait := page.MustWaitNavigation()
 	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
 	wait()
 
-	page.MustScreenshot("screenshot/04.png")
+	page.MustScreenshot("screenshot/L04.png")
 	if page.MustHas(".bg-color-blue") {
 		page.MustElement(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`).MustClick()
 		time.Sleep(time.Millisecond*500)
@@ -135,11 +135,11 @@ func a9 () {
 		logger.Warn("%s", "신청할 점심식사가 없습니다.")
 	}
 	time.Sleep(time.Millisecond*500)
-	page.MustScreenshot("screenshot/05.png")
+	page.MustScreenshot("screenshot/L05.png")
 }
 
 func main () {
-	a9()
+	lunch()
 }
 
 
