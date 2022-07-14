@@ -101,11 +101,56 @@ func initChrome () string {
 	return chromeVersion.WebSocketDebuggerUrl
 }
 
-func lunch () {
+func lunch (page *rod.Page) {	
+	time.Sleep(time.Millisecond*500)
+	//page.MustWaitLoad()
+	
+	page.MustScreenshot("screenshot/C01.png")
+	logger.Debug(page.MustInfo().URL)
+	wait := page.MustWaitNavigation()
+	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
+	wait()
+
+	page.MustScreenshot("screenshot/C02.png")
+	if page.MustHas(".bg-color-blue") {
+		page.MustElement(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`).MustClick()
+		time.Sleep(time.Millisecond*500)
+		page.MustScreenshot("screenshot/C03.png")
+		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "점심식사 신청을 완료 하였습니다.")
+	} else {
+		logger.Warn("%s", "신청할 점심식사가 없습니다.")
+	}
+	time.Sleep(time.Millisecond*500)
+	page.MustScreenshot("screenshot/C04.png")
+}
+
+func healthcare (page *rod.Page) {
+	page.MustScreenshotFullPage("screenshot/H01.png")
+	logger.Debug(page.MustInfo().URL)
+	wait := page.MustWaitNavigation()
+	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
+	wait()
+
+	page.MustScreenshotFullPage("screenshot/H02png")
+	elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
+	
+	if page.MustHas(".bg-color-blue") {
+		elements.Last().MustClick()
+		time.Sleep(time.Millisecond*500)
+		page.MustScreenshotFullPage("screenshot/H03.png")
+		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "헬스케어 신청을 완료 하였습니다.")
+	} else {
+		logger.Warn("%s", "신청할 헬스케어가 없습니다.")
+	}
+	time.Sleep(time.Millisecond*500)
+	page.MustScreenshotFullPage("screenshot/H04.png")
+}
+
+func login () *rod.Page {
 	// url := initChrome()
 	// browser := rod.New().ControlURL(url).MustConnect()
-	// tap := browser.MustPage("https://assist9.i-on.net/login")
-	// browser := rod.New().MustConnect()
 	// defer browser.MustClose()
 	browser := rod.New().MustConnect()
 	page := browser.MustPage("https://assist9.i-on.net/login")
@@ -114,74 +159,16 @@ func lunch () {
 	page.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
 	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
 	
-	time.Sleep(time.Millisecond*500)
 	page.MustScreenshot("screenshot/L02.png")
 	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
-	//page.MustWaitLoad()
 	
-	page.MustScreenshot("screenshot/L03.png")
-	logger.Debug(page.MustInfo().URL)
-	wait := page.MustWaitNavigation()
-	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
-	wait()
-
-	page.MustScreenshot("screenshot/L04.png")
-	if page.MustHas(".bg-color-blue") {
-		page.MustElement(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`).MustClick()
-		time.Sleep(time.Millisecond*500)
-		page.MustScreenshot("screenshot/L05.png")
-		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
-		logger.Info("%s", "점심식사 신청을 완료 하였습니다.")
-	} else {
-		logger.Warn("%s", "신청할 점심식사가 없습니다.")
-	}
-	time.Sleep(time.Millisecond*500)
-	page.MustScreenshot("screenshot/L06.png")
-}
-
-func healthcare () {
-	// url := initChrome()
-	// browser := rod.New().ControlURL(url).MustConnect()
-	// tap := browser.MustPage("https://assist9.i-on.net/login")
-	// browser := rod.New().MustConnect()
-	// defer browser.MustClose()
-	browser := rod.New().MustConnect()
-	page := browser.MustPage("https://assist9.i-on.net/login")
-	
-	page.MustScreenshotFullPage("screenshot/H01.png")
-	page.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
-	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
-	
-	time.Sleep(time.Millisecond*500)
-	page.MustScreenshotFullPage("screenshot/H02.png")
-	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
-	//page.MustWaitLoad()
-	
-	page.MustScreenshotFullPage("screenshot/H03.png")
-	logger.Debug(page.MustInfo().URL)
-	wait := page.MustWaitNavigation()
-	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
-	wait()
-
-	page.MustScreenshotFullPage("screenshot/H04.png")
-	elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
-	
-	if page.MustHas(".bg-color-blue") {
-		elements.Last().MustClick()
-		time.Sleep(time.Millisecond*500)
-		page.MustScreenshotFullPage("screenshot/H05.png")
-		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
-		logger.Info("%s", "헬스케어 신청을 완료 하였습니다.")
-	} else {
-		logger.Warn("%s", "신청할 헬스케어가 없습니다.")
-	}
-	time.Sleep(time.Millisecond*500)
-	page.MustScreenshotFullPage("screenshot/H06.png")
+	return page
 }
 
 func main () {
-	healthcare()
-	lunch()
+	page := login()
+	healthcare(page)
+	// lunch(page)
 }
 
 
