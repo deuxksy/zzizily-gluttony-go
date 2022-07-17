@@ -113,50 +113,44 @@ func checkLimit (page *rod.Page) {
 	os.Exit(1)
 }
 
-func lunch (page *rod.Page) {	
+func lunch (page *rod.Page) {
 	time.Sleep(time.Millisecond*500)
-	//page.MustWaitLoad()
-	
-	page.MustScreenshot("screenshot/C01.png")
-	logger.Debug(page.MustInfo().URL)
-	wait := page.MustWaitNavigation()
 	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
-	wait()
-	checkLimit(page)
-	page.MustScreenshot("screenshot/C02.png")
+	logger.Debug(page.MustInfo().URL)
+	time.Sleep(time.Millisecond*1000)
+	page.MustScreenshot("screenshot/lunch-01.png")
+
 	if page.MustHas(".bg-color-blue") {
-		page.MustElement(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`).MustClick()
+		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
+		elements.Last().MustClick()
 		time.Sleep(time.Millisecond*500)
-		page.MustScreenshot("screenshot/C03.png")
 		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
 		logger.Info("%s", "점심식사 신청을 완료 하였습니다.")
+		page.MustScreenshot("screenshot/lunch-02.png")
 	} else {
 		logger.Warn("%s", "신청할 점심식사가 없습니다.")
 	}
-	time.Sleep(time.Millisecond*500)
-	page.MustScreenshot("screenshot/C04.png")
+	page.MustScreenshot("screenshot/lunch-END.png")
 }
 
 func healthcare (page *rod.Page) {
-	page.MustScreenshotFullPage("screenshot/healthcare-01.png")
-	logger.Debug(page.MustInfo().URL)
-	wait := page.MustWaitNavigation()
+	time.Sleep(time.Millisecond*500)
 	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
-	wait()
+	logger.Debug(page.MustInfo().URL)
+	time.Sleep(time.Millisecond*1000)
+	page.MustScreenshot("screenshot/healthcare-01.png")
 
-	page.MustScreenshotFullPage("screenshot/healthcare-02.png")
-	elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
 	if page.MustHas(".bg-color-blue") {
+		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
 		elements.Last().MustClick()
 		time.Sleep(time.Millisecond*500)
-		page.MustScreenshotFullPage("screenshot/healthcare-03.png")
 		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
 		logger.Info("%s", "헬스케어 신청을 완료 하였습니다.")
+		page.MustScreenshot("screenshot/healthcare-02.png")
 	} else {
 		logger.Warn("%s", "신청할 헬스케어가 없습니다.")
 	}
-	time.Sleep(time.Millisecond*500)
-	page.MustScreenshotFullPage("screenshot/healthcare-04.png")
+	page.MustScreenshot("screenshot/healthcare-END.png")
 }
 
 func initRod() (*rod.Browser, *rod.Page) {
@@ -170,7 +164,11 @@ func initRod() (*rod.Browser, *rod.Page) {
 
 func login (browser *rod.Browser) (*rod.Page) {
 	page := browser.MustPage("https://assist9.i-on.net/login")
+	defer time.Sleep(time.Millisecond*1000)
+
+	logger.Debug(page.MustInfo().URL)
 	page.MustScreenshot("screenshot/login-01.png")
+	
 	page.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
 	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
 	
@@ -207,11 +205,11 @@ func GetUserAgent (page *rod.Page) string {
 }
 
 func main () {
-	logger.Debug("%s", "Gluttony")
+	logger.Info("%s", "Gluttony")
 	browser, page := initRod()
 	defer browser.MustClose()
 
 	page = login(browser)
 	healthcare(page)
-	// lunch(page)
+	lunch(page)
 }
