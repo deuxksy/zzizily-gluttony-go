@@ -12,7 +12,7 @@ import (
 var log *zap.Logger
 
 func init() {
-	yyMMdd := time.Now().Local().Format("060101")
+	yyMMdd := time.Now().Local().Format("060102")
 	var err error
 	config := zap.NewProductionConfig()
 	if config.Level, err = zap.ParseAtomicLevel("debug"); err != nil {
