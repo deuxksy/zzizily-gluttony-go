@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+var yyMMddHHmm = time.Now().Local().Format("0601021504")
 
 func init() {
 	profile := initProfile()
@@ -75,8 +77,8 @@ type ChromeVersion struct {
 
 func GetWebSocketDebuggerUrl () string {
 	lsCmd := exec.Command(
-		"/usr/bin/google-chrome",
-		"--user-data-dir=/home/crom/temp/chrome",
+		"/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome",
+		"--user-data-dir=/Users/crong/TEMP/chrome",
 		// "C:/Program Files/Google/Chrome/Application/chrome.exe", 
 		// "--user-data-dir=D:/TEMP/chrome", 
 		"--remote-debugging-port=12222", 
@@ -114,65 +116,57 @@ func checkLimit (page *rod.Page) {
 }
 
 func lunch (page *rod.Page) {
-	time.Sleep(time.Millisecond*500)
-	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
+	page.MustWaitLoad().MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
 	logger.Debug(page.MustInfo().URL)
-	time.Sleep(time.Millisecond*1000)
-	page.MustScreenshot("screenshot/lunch-01.png")
+	page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "01"))
 
 	if page.MustHas(".bg-color-blue") {
 		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
 		elements.Last().MustClick()
-		time.Sleep(time.Millisecond*500)
-		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
-		logger.Info("%s", "점심식사 신청을 완료 하였습니다.")
-		page.MustScreenshot("screenshot/lunch-02.png")
+		
+		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "Complate Lunch")
+		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "02"))
 	} else {
-		logger.Warn("%s", "신청할 점심식사가 없습니다.")
+		logger.Warn("%s", "Not Found Lunch")
 	}
-	page.MustScreenshot("screenshot/lunch-END.png")
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "03"))
 }
 
 func healthcare (page *rod.Page) {
-	time.Sleep(time.Millisecond*500)
-	page.MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
+	page.MustWaitLoad().MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
 	logger.Debug(page.MustInfo().URL)
-	time.Sleep(time.Millisecond*1000)
-	page.MustScreenshot("screenshot/healthcare-01.png")
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "01"))
 
 	if page.MustHas(".bg-color-blue") {
 		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
 		elements.Last().MustClick()
-		time.Sleep(time.Millisecond*500)
-		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
-		logger.Info("%s", "헬스케어 신청을 완료 하였습니다.")
-		page.MustScreenshot("screenshot/healthcare-02.png")
+		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "Complate Healthcare")
+		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "02"))
 	} else {
-		logger.Warn("%s", "신청할 헬스케어가 없습니다.")
+		logger.Warn("%s", "Not Found HealthCare")
 	}
-	page.MustScreenshot("screenshot/healthcare-END.png")
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "03"))
 }
 
 func initRod() (*rod.Browser, *rod.Page) {
 	browser := rod.New().MustConnect()
-	browser.DefaultDevice(devices.IPadMini)
 	// url := GetWebSocketDebuggerUrl()
 	// browser := rod.New().ControlURL(url).MustConnect()
+	browser.DefaultDevice(devices.IPadMini)
 	page := browser.MustPage()
 	return browser, page
 }
 
 func login (browser *rod.Browser) (*rod.Page) {
 	page := browser.MustPage("https://assist9.i-on.net/login")
-	defer time.Sleep(time.Millisecond*1000)
-
 	logger.Debug(page.MustInfo().URL)
-	page.MustScreenshot("screenshot/login-01.png")
-	
-	page.MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "01-login", "01"))
+	page.MustWaitLoad().MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
 	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
 	
-	page.MustScreenshot("screenshot/login-02.png")
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "01-login", "02"))
 	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
 	return page
 }
