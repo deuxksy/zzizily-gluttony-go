@@ -126,11 +126,11 @@ func initRod() (*rod.Browser) {
 func login (browser *rod.Browser) (*rod.Page) {
 	page := browser.MustPage("https://assist9.i-on.net/login")
 	logger.Debug(page.MustInfo().URL)
-	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "01-login", "01"))
+	// page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "01-login", "01"))
 	page.MustWaitLoad().MustElement("input[name=userId]").MustWaitVisible().MustInput(os.Getenv("USERID"))
 	page.MustElement("input[name=userPwd]").MustWaitVisible().MustInput(os.Getenv("USERPW"))
 	
-	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "01-login", "02"))
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "01-login", "01"))
 	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
 	return page
 }
@@ -169,7 +169,7 @@ func lunch (page *rod.Page) {
 		page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "03"))
 	}
 
-func GetLimit(browser *rod.Browser) (int, int) {
+func PrintCookies(browser *rod.Browser) {
 	logger.Debug("%s", browser.MustVersion().UserAgent)
 	cookies, err := browser.GetCookies()
 	if err != nil {
@@ -178,7 +178,6 @@ func GetLimit(browser *rod.Browser) (int, int) {
 	for _, cookie := range cookies {
 		logger.Debug("%s: %s=%s", cookie.Domain, cookie.Name, cookie.Value)
 	}
-	return 1, 1
 }
 
 func GetUserAgent (page *rod.Page) string {
@@ -200,8 +199,8 @@ func main () {
 	logger.Info("%s", "Gluttony")
 	browser := initRod()
 	defer browser.MustClose()
-	
 	page := login(browser)
+	// logger.Debug("UserAgent: %s", GetUserAgent(page))
 	page.Eval(`window.alert = () => {}`)
 	healthcare(page)
 	lunch(page)
