@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -115,48 +115,12 @@ func checkLimit (page *rod.Page) {
 	os.Exit(1)
 }
 
-func lunch (page *rod.Page) {
-	page.MustWaitLoad().MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
-	logger.Debug(page.MustInfo().URL)
-	page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "01"))
-
-	if page.MustHas(".bg-color-blue") {
-		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
-		elements.Last().MustClick()
-		
-		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
-		logger.Info("%s", "Complate Lunch")
-		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "02"))
-	} else {
-		logger.Warn("%s", "Not Found Lunch")
-	}
-	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "03"))
-}
-
-func healthcare (page *rod.Page) {
-	page.MustWaitLoad().MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
-	logger.Debug(page.MustInfo().URL)
-	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "01"))
-
-	if page.MustHas(".bg-color-blue") {
-		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
-		elements.Last().MustClick()
-		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
-		logger.Info("%s", "Complate Healthcare")
-		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "02"))
-	} else {
-		logger.Warn("%s", "Not Found HealthCare")
-	}
-	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "03"))
-}
-
-func initRod() (*rod.Browser, *rod.Page) {
+func initRod() (*rod.Browser) {
 	browser := rod.New().MustConnect()
 	// url := GetWebSocketDebuggerUrl()
 	// browser := rod.New().ControlURL(url).MustConnect()
 	browser.DefaultDevice(devices.IPadMini)
-	page := browser.MustPage()
-	return browser, page
+	return browser
 }
 
 func login (browser *rod.Browser) (*rod.Page) {
@@ -170,6 +134,40 @@ func login (browser *rod.Browser) (*rod.Page) {
 	page.MustElement("input[name=userPwd]").MustType(input.Enter)//.MustWaitInvisible()
 	return page
 }
+
+func healthcare (page *rod.Page) {
+	page.MustWaitLoad().MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183")
+	logger.Debug(page.MustInfo().URL)
+	page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "01"))
+
+	if page.MustWaitLoad().MustHas(".bg-color-blue") {
+		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "02"))
+		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
+		elements.Last().MustClick()
+		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "Complate Healthcare")
+	} else {
+		logger.Warn("%s", "Not Found HealthCare")
+	}
+	page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "03"))
+}
+
+func lunch (page *rod.Page) {
+	page.MustWaitLoad().MustNavigate("https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46")
+	logger.Debug(page.MustInfo().URL)
+	page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "01"))
+
+	if page.MustWaitLoad().MustHas(".bg-color-blue") {
+		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "02"))
+		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
+		elements.Last().MustClick()
+		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		logger.Info("%s", "Complate Lunch")
+		} else {
+			logger.Warn("%s", "Not Found Lunch")
+		}
+		page.MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "03"))
+	}
 
 func GetLimit(browser *rod.Browser) (int, int) {
 	logger.Debug("%s", browser.MustVersion().UserAgent)
@@ -200,10 +198,11 @@ func GetUserAgent (page *rod.Page) string {
 
 func main () {
 	logger.Info("%s", "Gluttony")
-	browser, page := initRod()
+	browser := initRod()
 	defer browser.MustClose()
-
-	page = login(browser)
+	
+	page := login(browser)
+	page.Eval(`window.alert = () => {}`)
 	healthcare(page)
 	lunch(page)
 }
