@@ -144,7 +144,7 @@ func healthcare (page *rod.Page) {
 		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "02-healthcare", "02"))
 		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
 		elements.Last().MustClick()
-		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
 		logger.Info("%s", "Complate Healthcare")
 	} else {
 		logger.Warn("%s", "Not Found HealthCare")
@@ -161,7 +161,7 @@ func lunch (page *rod.Page) {
 		page.MustWaitLoad().MustScreenshotFullPage(fmt.Sprintf("screenshot/%s/%s-%s.png", yyMMddHHmm, "03-lunch", "02"))
 		elements := page.MustElements(`div[class="fc-event fc-event-hori fc-event-start fc-event-end bg-color-blue"]`)
 		elements.Last().MustClick()
-		page.MustWaitLoad().MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
+		page.MustElement(`a[class="btn btn-info btn-sm"]`).MustClick()
 		logger.Info("%s", "Complate Lunch")
 		} else {
 			logger.Warn("%s", "Not Found Lunch")
