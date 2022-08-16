@@ -1,4 +1,4 @@
-# Templat Go
+# Gluttony
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/deuxksy/template-go-application)](https://goreportcard.com/report/github.com/deuxksy/template-go-application) Go Application 을 만들기 위한 기본 template
 
@@ -37,22 +37,29 @@
 - zap
 - viper
 
-## build
+### OS
+
+https://go-rod.github.io/#/compatibility?id=os
+
+## mod & build
 
 ### windows
 
 ```bash
-# GOOS=windows GOARCH=amd64 go build main.go
+go mod tidy
+GOOS=windows GOARCH=amd64 go build main.go
 ```
 
 ### linux
 
 ```bash
-# GOOS=linux GOARCH=386 go build main.go
+go mod tidy
+GOOS=linux GOARCH=386 go build main.go
 ```
 
 ### mac
 
 ```bash
-# GOOS=darwin GOARCH=arm64 go build main.go
+go mod tidy
+GOOS=darwin GOARCH=arm64 go build main.go
 ```
