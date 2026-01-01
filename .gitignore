@@ -1,4 +1,27 @@
+# General
 .DS_Store
-/logs
-/screenshot
+Thumbs.db
+*.swp
+
+# Go
+vendor/
+go.work
+go.work.sum
+coverage.txt
+profile.out
+
+# Binary
 /gluttony
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Logs and Data
+logs/
+screenshot/

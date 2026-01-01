@@ -1,82 +1,100 @@
-# Gluttony
+# Gluttony (zzizily-gluttony-go)
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/deuxksy/template-go-application)](https://goreportcard.com/report/github.com/deuxksy/template-go-application) Go Application 을 만들기 위한 기본 template
+**Assist9(i-on.net) 자동화 및 예약 도구**
 
-## Folder Layout
+`Gluttony`는 `go-rod`를 기반으로 한 브라우저 자동화 도구입니다. 설정된 시나리오에 따라 지정된 웹사이트(Assist9)에 로그인하고, 특정 예약을 자동으로 수행하거나 스크린샷을 캡처하는 기능을 제공합니다.
+
+## 주요 기능
+
+- **자동 로그인**: 환경 변수에 저장된 자격 증명을 사용하여 자동 로그인을 수행합니다.
+- **시나리오 기반 실행**: YAML 설정 파일을 통해 수행할 작업(로그인, 예약 등)을 순차적으로 정의하고 실행할 수 있습니다.
+- **예약 자동화**: 캘린더 등에서 특정 조건의 이벤트를 찾아 클릭하고 예약을 진행합니다.
+- **스크린샷 캡처**: 각 단계별로 스크린샷을 찍어 `screenshot/` 폴더에 타임스탬프와 함께 저장합니다.
+- **로깅**: 실행 로그를 `logs/YYMMDD/` 디렉토리에 날짜별로 기록합니다.
+
+## 시작하기 (Getting Started)
+
+### 1. 요구 사항 (Prerequisites)
+
+- Go 1.18 이상
+- Google Chrome (go-rod가 내부적으로 브라우저를 제어함)
+
+### 2. 설치 및 설정
+
+**레포지토리 클론**
 
 ```bash
-.
-├── README.md
-├── assets
-├── build
-│   └── ci
-│       └── build.jenkinsfiles
-├── cmd
-│   └── template
-│       └── main.go
-├── configs
-│   ├── dev.yml
-│   └── local.yml
-├── go.mod
-├── go.sum
-├── internal
-│   ├── configuration
-│   │   └── config_model.go
-│   └── logger
-│       └── logger.go
-├── logs
-│   └── 220707
-│       ├── error.log
-│       └── out.log
-├── pkg
-└── test
+git clone https://github.com/deuxksy/zzizily-gluttony-go.git
+cd zzizily-gluttony-go
 ```
 
-## Setup
+**환경 변수 설정**
+`.env.example` 파일을 복사하여 `.env` 파일을 생성하고, 필요한 정보를 입력합니다.
 
-1. Copy `.env.example` to `.env` (or set environment variables manually).
-   ```bash
-   cp .env.example .env
-   ```
-2. Edit `.env` with your credentials:
-   ```bash
-   USERID=your_id
-   USERPW=your_password
-   ```
+```bash
+cp .env.example .env
+```
 
-## Configuration
+`.env` 파일 내용 편집:
 
-Edit `configs/local.yml` (or create a new profile config) to define scenarios.
-Example:
+```ini
+USERID=your_username  # 로그인 ID
+USERPW=your_password  # 로그인 패스워드
+GO_PROFILE=local      # 사용할 설정 프로필 (기본값: local)
+```
+
+**시나리오 설정**
+`configs/` 디렉토리에 설정 파일(예: `local.yml`)을 작성합니다.
+
 ```yaml
 Scenario:
   - name: Login
     url: https://assist9.i-on.net/login
     type: login
   - name: Healthcare
-    url: ...
+    url: https://assist9.i-on.net/rb/main#booking/calendar?resourceId=...
     type: booking
 ```
 
-## mod & build
+- **Login**: `type: login`으로 설정하며, 로그인을 수행합니다.
+- **Booking**: `type: booking`으로 설정하며, 해당 URL로 이동하여 예약을 시도합니다.
 
-### windows
+### 3. 실행 (Usage)
 
-```bash
-go mod tidy
-GOOS=windows GOARCH=amd64 go build -o gluttony.exe cmd/gluttony/main.go
-```
-
-### linux
+**직접 실행 (Go Run)**
 
 ```bash
-go mod tidy
-GOOS=linux GOARCH=386 go build -o gluttony cmd/gluttony/main.go
+go run cmd/gluttony/main.go
 ```
 
-### mac
+**빌드 후 실행**
 
 ```bash
-go mod tidy
-GOOS=darwin GOARCH=arm64 go build -o gluttony cmd/gluttony/main.go
+# Windows
+go build -o gluttony.exe cmd/gluttony/main.go
+# Mac/Linux
+go build -o gluttony cmd/gluttony/main.go
+
+./gluttony
 ```
+
+## 프로젝트 구조
+
+```text
+.
+├── cmd/
+│   └── gluttony/       # 메인 애플리케이션 엔트리 포인트
+├── configs/            # 시나리오 설정 파일 (YAML)
+├── internal/
+│   ├── configuration/  # 설정 구조체 및 파싱 로직
+│   └── logger/         # 로깅 설정 (Zap)
+├── logs/               # 실행 로그 저장소 (자동 생성)
+├── screenshot/         # 스크린샷 저장소 (자동 생성)
+├── .env                # 환경 변수 (Credentials)
+└── go.mod              # Go 모듈 의존성
+```
+
+## 출력 결과
+
+- **스크린샷**: `screenshot/YYMMddHHmm/` 디렉토리에 시나리오 실행 단계별 이미지가 저장됩니다.
+- **로그**: `logs/YYMMdd/` 디렉토리에 `out.log` (일반 로그)와 `error.log` (에러 로그)가 저장됩니다.
