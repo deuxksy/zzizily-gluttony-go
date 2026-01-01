@@ -1,8 +1,8 @@
 # Gluttony (zzizily-gluttony-go)
 
-**Assist9(i-on.net) 자동화 및 예약 도구**
+**예약 자동화 도구**
 
-`Gluttony`는 `go-rod`를 기반으로 한 브라우저 자동화 도구입니다. 설정된 시나리오에 따라 지정된 웹사이트(Assist9)에 로그인하고, 특정 예약을 자동으로 수행하거나 스크린샷을 캡처하는 기능을 제공합니다.
+`Gluttony`는 `go-rod`를 기반으로 한 브라우저 자동화 도구입니다. 설정된 시나리오에 따라 지정된 웹사이트에 로그인하고, 특정 예약을 자동으로 수행하거나 스크린샷을 캡처하는 기능을 제공합니다.
 
 ## 주요 기능
 
@@ -49,10 +49,10 @@ GO_PROFILE=local      # 사용할 설정 프로필 (기본값: local)
 ```yaml
 Scenario:
   - name: Login
-    url: https://assist9.i-on.net/login
+    url: https://example.com/login
     type: login
   - name: Healthcare
-    url: https://assist9.i-on.net/rb/main#booking/calendar?resourceId=...
+    url: https://example.com/rb/main#booking/calendar?resourceId=...
     type: booking
 ```
 

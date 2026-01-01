@@ -1,10 +1,10 @@
 Scenario:
   - name: Login
-    url: https://assist9.i-on.net/login
+    url: https://example.com/login
     type: login
   - name: Healthcare
-    url: https://assist9.i-on.net/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183
+    url: https://example.com/rb/main#booking/calendar?resourceId=555a0f1645cee1e334430183
     type: booking
   - name: Lunch
-    url: https://assist9.i-on.net/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46
+    url: https://example.com/rb/main#booking/calendar?resourceId=554971d845ceac19504bbe46
     type: booking
