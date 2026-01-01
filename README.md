@@ -67,16 +67,18 @@ Scenario:
 go run cmd/gluttony/main.go
 ```
 
-**빌드 후 실행**
+**빌드 및 실행**
 
 ```bash
-# Windows
-go build -o gluttony.exe cmd/gluttony/main.go
-# Mac/Linux
+# 빌드
 go build -o gluttony cmd/gluttony/main.go
 
+# 실행
 ./gluttony
 ```
+
+**개발 모드 (스크립트 활용)**
+- Mac: `./scripts/chrome-debug.sh` (크롬 디버깅 모드 실행)
 
 ## 프로젝트 구조
 
