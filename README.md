@@ -82,16 +82,22 @@ go build -o gluttony cmd/gluttony/main.go
 
 ```text
 .
+├── .github/
+│   └── workflows/      # CI/CD 및 Release 설정
 ├── cmd/
-│   └── gluttony/       # 메인 애플리케이션 엔트리 포인트
-├── configs/            # 시나리오 설정 파일 (YAML)
+│   └── gluttony/       # 메인 애플리케이션 (Entry Point)
+├── configs/            # 시나리오 설정 파일 (local.yml 등)
 ├── internal/
-│   ├── configuration/  # 설정 구조체 및 파싱 로직
+│   ├── configuration/  # 설정 로드 및 구조체 정의
 │   └── logger/         # 로깅 설정 (Zap)
-├── logs/               # 실행 로그 저장소 (자동 생성)
-├── screenshot/         # 스크린샷 저장소 (자동 생성)
-├── .env                # 환경 변수 (Credentials)
-└── go.mod              # Go 모듈 의존성
+├── scripts/            # 개발 및 실행 보조 스크립트
+├── .env.example        # 환경 변수 예제
+├── .goreleaser.yaml    # GoReleaser 설정
+├── CHANGELOG.md        # 변경 이력
+├── LICENSE             # 라이선스 (MIT)
+├── README.md           # 프로젝트 문서
+├── go.mod              # Go 모듈 정의
+└── go.sum              # Go 모듈 체크섬
 ```
 
 ## 출력 결과
