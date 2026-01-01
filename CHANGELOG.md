@@ -6,6 +6,19 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-01-02
+
+### Added
+- `LICENSE` 파일 추가 (MIT License, Copyright Crong).
+- Mac용 개발 스크립트 `scripts/chrome-debug.sh` 추가.
+
+### Changed
+- 프로젝트 구조 정리: 불필요한 `build/`, `configs/dev.yml`, `scripts/start.sh` 삭제.
+- CI/CD 설정 개선:
+  - 워크플로우 트리거를 `develop`에서 `main`으로 변경.
+  - GitHub Actions `v3` -> `v4` 업그레이드.
+  - Go 버전 `1.18` -> `1.21` 업그레이드.
+
 ## [0.1.0] - 2026-01-02
 
 ### Added
